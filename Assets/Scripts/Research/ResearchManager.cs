@@ -30,12 +30,15 @@ public class ResearchManager : MonoBehaviour
         EnginePrice.text = "Upgrade Price " + (35000 * R_Stats.hullLevel).ToString();
     }
     // RESEARCH IS NU NOG INSTANT, FIX DIT
+    // fix de research over scene + check of je genoeg geld hebt voor research.
     public void UpgradeCargo(Button button)
     {
+        
         button.interactable = false;
         P_Stats.P_Stats.rocketCarryWeight += 15;
         P_Stats.P_Stats.Balance -= 15000 * (P_Stats.P_Stats.rocketCarryWeight / 15);
         StartCoroutine(EnableButton(button, (100 * (P_Stats.P_Stats.rocketCarryWeight / 15)) / P_Stats.scientistCount));
+        P_Stats.updateBalance();
     }
 
     public void UpgradeHull(Button button)
@@ -44,6 +47,7 @@ public class ResearchManager : MonoBehaviour
         P_Stats.P_Stats.Balance -= 55000 * R_Stats.hullLevel;
         button.interactable = false;
         StartCoroutine(EnableButton(button, (100 * R_Stats.hullLevel) / P_Stats.scientistCount));
+        P_Stats.updateBalance();
     }
 
     public void UpgradeEngine(Button button)
@@ -52,6 +56,7 @@ public class ResearchManager : MonoBehaviour
         P_Stats.P_Stats.Balance -= 35000 * R_Stats.hullLevel;
         button.interactable = false;
         StartCoroutine(EnableButton(button, (100 * R_Stats.rocketLevel) / P_Stats.scientistCount));
+        P_Stats.updateBalance();
         Debug.Log("TRUE");
     }
 

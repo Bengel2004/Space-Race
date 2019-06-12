@@ -24,7 +24,7 @@ public class PlayerManager : MonoBehaviour
 
 
     float timestamp = 0.0f;
-    public float MonthToSeconds;
+    public static float MonthToSeconds = 60f;
 
     public TextMeshProUGUI balanceText;
     public TextMeshProUGUI incomeText;
@@ -47,7 +47,6 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        P_Stats.Balance = balance;
         P_Stats.Scientists = scientistCount;
         P_Stats.Engineers = engineerCount;
         P_Stats.DefaultIncome = defaultIncome;
@@ -56,23 +55,30 @@ public class PlayerManager : MonoBehaviour
         {
             timestamp = Time.time + MonthToSeconds;
             income = (defaultIncome - ((scientistCount * scientistPrice) + (engineerCount * engineerPrice)));
-            balance += Mathf.RoundToInt(income);
-            Debug.Log(income);
+            P_Stats.Balance += Mathf.RoundToInt(income);
+
             if (balance > 1000)
-            {
-                balanceText.text = "Balance: $" + (balance / 1000).ToString() + "k";
-                incomeText.text = "Income: $" + (income / 1000).ToString() + "k";
-            }
+                balanceText.text = "Balance: $" + (P_Stats.Balance / 1000).ToString() + "k";
             else
-            {
-                balanceText.text = "Balance: $" + balance.ToString();
+                balanceText.text = "Balance: $" + P_Stats.Balance.ToString();
+
+            if (income > 1000)
+                incomeText.text = "Income: $" + (income / 1000).ToString() + "k";
+            else
                 incomeText.text = "Income: $" + (income).ToString();
-            }
         }
     }
 
     public void updateBalance()
     {
-        balanceText.text = "Balance: $" + (balance / 1000).ToString() + "k";
+        if (balance > 1000)
+            balanceText.text = "Balance: $" + (P_Stats.Balance / 1000).ToString() + "k";
+        else
+            balanceText.text = "Balance: $" + P_Stats.Balance.ToString();
+
+        if (income > 1000)
+            incomeText.text = "Income: $" + (income / 1000).ToString() + "k";
+        else
+            incomeText.text = "Income: $" + (income).ToString();
     }
 }

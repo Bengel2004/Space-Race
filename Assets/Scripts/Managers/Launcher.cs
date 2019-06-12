@@ -45,7 +45,7 @@ public class Launcher : MonoBehaviour
     public GameObject SuccessfullLaunchUI;
     public AudioClip CongratulationsSound;
 
-
+    bool canLaunchAgain = true;
 
     // Start is called before the first frame update
     void Start()
@@ -64,6 +64,7 @@ public class Launcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         AmountText.text = Amount.value.ToString();
         if (Input.GetKeyDown(KeyCode.L))
         {
@@ -77,6 +78,11 @@ public class Launcher : MonoBehaviour
             {
                 ConstructionMenu.SetActive(true);
                 OtherMenu.SetActive(false);
+                float CheckPrice = defaultLaunchPrice;
+                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                    LaunchButton.interactable = true;
+                else
+                    LaunchButton.interactable = false;
             }
         }
         else
@@ -91,12 +97,22 @@ public class Launcher : MonoBehaviour
                 if (AmountType.text != "Supplies")
                     AmountType.text = "Supplies";
                 Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePercargoTons), 0, rocketCarryWeight);
+                float CheckPrice = defaultLaunchPrice + pricePercargoTons * Amount.value;
+                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                    LaunchButton.interactable = true;
+                else
+                    LaunchButton.interactable = false;
             }
             else if (launchTypeDropdown.options[launchTypeDropdown.value].text == "Colonize")
             {
                 if (AmountType.text != "Colonists")
                     AmountType.text = "Colonists";
                 Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePerColonist), 0, rocketCarryWeight);
+                float CheckPrice = defaultLaunchPrice + pricePerColonist * Amount.value;
+                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                    LaunchButton.interactable = true;
+                else
+                    LaunchButton.interactable = false;
             }
         }
     }
@@ -124,13 +140,13 @@ public class Launcher : MonoBehaviour
             LaunchRocket(LaunchType.Colonize, Amount.value, "", explosionDetermination, 60f);
         }
         LaunchButton.interactable = false;
+        canLaunchAgain = false;
         StartCoroutine(ReadyToLaunch(45));
     }
 
     void LaunchRocket(LaunchType type, float Value, string Building, float explosionNumber, float speed)
     {
         Instantiate(Rocket, RocketSpawnPoint.transform.position, RocketSpawnPoint.transform.rotation);
-        Debug.Log(explosionCounter > Random.Range(2, 5));
         if (explosionDetermination > (((chanceOfExplosion / 2) / thePlayer.R_Stats.hullLevel) + ((chanceOfExplosion / 2) / (thePlayer.R_Stats.rocketLevel / 2)) + 10) || explosionCounter > Random.Range(2, 5))
         {
             explosionCounter = 0;
@@ -139,6 +155,7 @@ public class Launcher : MonoBehaviour
                 // Value == Aantal ton cargo
                 LaunchPrice = defaultLaunchPrice + pricePercargoTons * Value;
                 thePlayer.balance -= Mathf.RoundToInt(LaunchPrice);
+                thePlayer.M_Stats.Supplies =+ Mathf.RoundToInt(Value);
                 StartCoroutine(Resource_ETA(type, Value, speed));
             }
             else if (type == LaunchType.Construct)
@@ -173,6 +190,7 @@ public class Launcher : MonoBehaviour
                 LaunchPrice = defaultLaunchPrice + pricePerColonist * Value;
                 thePlayer.balance -= Mathf.RoundToInt(LaunchPrice);
                 StartCoroutine(Consruction_ETA(Building, speed));
+                thePlayer.M_Stats.Colonists = +Mathf.RoundToInt(Value);
             }
         }
         else
@@ -187,6 +205,7 @@ public class Launcher : MonoBehaviour
     {
         yield return new WaitForSeconds(WaitTime);
         LaunchButton.interactable = true;
+        canLaunchAgain = true;
     }
 
     private IEnumerator Consruction_ETA(string Building, float waitTime)

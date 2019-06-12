@@ -57,9 +57,11 @@ public class MoonManager : MonoBehaviour
         if (theMoonStats.LaunchPadBuilt && !LaunchPad.activeSelf)
             LaunchPad.SetActive(true);
 
+        happyness = Mathf.Clamp(happyness, 0, 100);
+        supplies = Mathf.Clamp(supplies, 0, 3000);
+
         theMoonStats.Supplies = supplies;
         theMoonStats.Colonists = Colonists;
-        happyness = Mathf.Clamp(happyness, 0, 100);
         theMoonStats.Happyness = happyness;
 
         ColonistsText.text = "Colonists: " + Colonists;

@@ -7273,6 +7273,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 766044264}
   m_CullTransparentMesh: 0
+--- !u!1 &773008246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 773008249}
+  - component: {fileID: 773008248}
+  - component: {fileID: 773008247}
+  m_Layer: 0
+  m_Name: MoonManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &773008247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773008246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fde28460286f8945a9099e8f548d044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  P_Current: {fileID: 11400000, guid: 30f41cb5332ce7742a9e319532dbdac9, type: 2}
+  M_Current: {fileID: 11400000, guid: d1b0dc9240173e7428c4f422e86cc55c, type: 2}
+  R_Current: {fileID: 11400000, guid: c169955024906e54286569b39947fe3f, type: 2}
+  P_Default: {fileID: 11400000, guid: 4637fb0210255e04795fc43d3c90beb5, type: 2}
+  M_Default: {fileID: 11400000, guid: 7e749415980fff64cbc8184e9b75ed15, type: 2}
+  R_Default: {fileID: 11400000, guid: 57cd1702f3d773247ac754910014615e, type: 2}
+--- !u!114 &773008248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773008246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6751fef03b07d41a0c57737cfc6c5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theMoon: {fileID: 11400000, guid: d1b0dc9240173e7428c4f422e86cc55c, type: 2}
+  consumptionRate: 0
+  Timestamp: 0
+--- !u!4 &773008249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773008246}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.341105, y: 9.788595, z: -7.1942406}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &776862605
 GameObject:
   m_ObjectHideFlags: 0
@@ -17666,7 +17731,6 @@ MonoBehaviour:
   engineerCount: 0
   researchSpeed: 1
   constructionSpeed: 1
-  MonthToSeconds: 60
   balanceText: {fileID: 1679698864}
   incomeText: {fileID: 952541284}
 --- !u!4 &1950861629
