@@ -177,7 +177,6 @@ public class Launcher : MonoBehaviour
     void LaunchRocket(LaunchType type, int Value, string Building, float explosionNumber, float speed)
     {
         Instantiate(Rocket, RocketSpawnPoint.transform.position, RocketSpawnPoint.transform.rotation);
-        explosionCounter = 7;
         if (explosionDetermination > (((chanceOfExplosion / 2) / thePlayer.R_Stats.HullLevel) + ((chanceOfExplosion / 2) / (thePlayer.R_Stats.RocketLevel / 2)) + 10) || explosionCounter > Random.Range(2, 5))
         {
             explosionCounter = 0;
