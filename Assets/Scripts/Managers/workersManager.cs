@@ -22,6 +22,13 @@ public class workersManager : MonoBehaviour
 
     [Header("Lauch")]
     public GameObject LaunchUI;
+    public GameObject MarsLaunchUI;
+
+    [Header("Cursors")]
+    public Texture2D mouseCursor;
+    public Texture2D pointCursur;
+    public CursorMode cursorMode = CursorMode.Auto;
+    public Vector2 hotSpot = Vector2.zero;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,35 +52,47 @@ public class workersManager : MonoBehaviour
         ScientistCounter.maxValue = (thePlayer.defaultIncome / PlayerManager.scientistPrice);
         MechanicCounter.maxValue = (thePlayer.defaultIncome / PlayerManager.engineerPrice);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
+
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            Cursor.SetCursor(mouseCursor, hotSpot, cursorMode);
+            return;
+    }
 
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.transform.name == "MechanicsBuilding")
             {
-                if (hit.transform.name == "MechanicsBuilding")
+                Cursor.SetCursor(pointCursur, hotSpot, cursorMode);
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if(!MechanicUI.activeSelf)
+                    if (!MechanicUI.activeSelf)
                         MechanicUI.SetActive(true);
                     else
                         MechanicUI.SetActive(false);
                     ScientistUI.SetActive(false);
                     LaunchUI.SetActive(false);
                 }
-                else if (hit.transform.name == "ScientistBuilding")
+            }
+            else if (hit.transform.name == "ScientistBuilding")
+            {
+                Cursor.SetCursor(pointCursur, hotSpot, cursorMode);
+                if (Input.GetMouseButtonDown(0))
                 {
                     if (!ScientistUI.activeSelf)
-                        ScientistUI.SetActive(true);
-                    else
-                        ScientistUI.SetActive(false);
+                    ScientistUI.SetActive(true);
+                else
+                    ScientistUI.SetActive(false);
                     MechanicUI.SetActive(false);
                     LaunchUI.SetActive(false);
                 }
-                else if (hit.transform.name == "LaunchPad")
+            }
+            else if (hit.transform.name == "LaunchPad")
+            {
+                Cursor.SetCursor(pointCursur, hotSpot, cursorMode);
+                if (Input.GetMouseButtonDown(0))
                 {
                     if (!LaunchUI.activeSelf)
                         LaunchUI.SetActive(true);
@@ -82,12 +101,30 @@ public class workersManager : MonoBehaviour
                     MechanicUI.SetActive(false);
                     ScientistUI.SetActive(false);
                 }
+                }
+            else if (hit.transform.name == "MarsLauncher")
+            {
+                Cursor.SetCursor(pointCursur, hotSpot, cursorMode);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (!MarsLaunchUI.activeSelf)
+                        MarsLaunchUI.SetActive(true);
+                    else
+                        MarsLaunchUI.SetActive(false);
+                }
             }
             else
             {
-                ScientistUI.SetActive(false);
-                MechanicUI.SetActive(false);
+                Cursor.SetCursor(mouseCursor, hotSpot, cursorMode);
             }
+                
+        }
+        else
+        {
+            Cursor.SetCursor(mouseCursor, hotSpot, cursorMode);
+            ScientistUI.SetActive(false);
+            MechanicUI.SetActive(false);
         }
     }
+    
 }

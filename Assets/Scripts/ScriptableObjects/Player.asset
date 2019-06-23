@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c959c095fefb789409e59aaebbb68688, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  Balance: -8150
-  DefaultIncome: 24000
-  Scientists: 18
-  Engineers: 1
-  rocketCarryWeight: 45
+  Balance: 95800
+  DefaultIncome: 23000
+  Scientists: 16
+  Engineers: 0
+  rocketCarryWeight: 30

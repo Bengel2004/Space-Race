@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Launcher : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class Launcher : MonoBehaviour
     public TextMeshProUGUI AmountText;
     public TextMeshProUGUI AmountType;
 
+    public Button ToMoonButton;
 
     AudioSource AudioSource;
 
@@ -47,16 +49,19 @@ public class Launcher : MonoBehaviour
 
     bool canLaunchAgain = true;
 
+    int SliderValue;
     // Start is called before the first frame update
     void Start()
     {
         LaunchUI.SetActive(false);
         OtherMenu.SetActive(false);
-        rocketCarryWeight = thePlayer.P_Stats.rocketCarryWeight;
         AudioSource = GetComponent<AudioSource>();
         ExplosionUI.SetActive(false);
         SuccessfullLaunchUI.SetActive(false);
+        defaultLaunchPrice = (45000 + (2000 * thePlayer.R_Stats.RocketLevel) + (500 * thePlayer.R_Stats.HullLevel));
 
+
+        RocketSpawnPoint = GameObject.Find("RocketSpawnPoint").transform;
         //LETOP LETOP LETOP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // ZET DE LAUNCH BUTTON UIT ALS DE SPELER NIET GENOEG MECHANICS HEEFT OM DE RAKET TE MAKEN. DIT SCHEELT WEER WAT AI PROGRAMMEER WERK.
     }
@@ -64,121 +69,158 @@ public class Launcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SliderValue = Mathf.RoundToInt(Amount.value);
+        if (SceneManager.GetActiveScene().name == "EarthScene")
+        {
+            if(RocketSpawnPoint == null)
+                RocketSpawnPoint = GameObject.Find("RocketSpawnPoint").transform;
+        } 
 
         AmountText.text = Amount.value.ToString();
         if (Input.GetKeyDown(KeyCode.L))
         {
             LaunchUI.SetActive(!LaunchUI.activeSelf);
-            Amount.maxValue = rocketCarryWeight;
+            Amount.maxValue = thePlayer.R_Stats.CarryWeight;
         }
+        if (LaunchUI.activeSelf)
+        {
 
-        if(launchTypeDropdown.options[launchTypeDropdown.value].text == "Construct")
-        {
-            if (!ConstructionMenu.activeSelf)
+            ConstructionMenu.SetActive(true);
+            OtherMenu.SetActive(false);
+            defaultLaunchPrice = (45000 + (2000 * thePlayer.R_Stats.RocketLevel) + (500 * thePlayer.R_Stats.HullLevel));
+            float CheckPrice = defaultLaunchPrice;
+            if (thePlayer.balance > CheckPrice && canLaunchAgain)
+                LaunchButton.interactable = true;
+            else
+                LaunchButton.interactable = false;
+
+
+            if (launchTypeDropdown.options[launchTypeDropdown.value].text == "Construct")
             {
-                ConstructionMenu.SetActive(true);
-                OtherMenu.SetActive(false);
-                float CheckPrice = defaultLaunchPrice;
-                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
-                    LaunchButton.interactable = true;
-                else
-                    LaunchButton.interactable = false;
+                if (!ConstructionMenu.activeSelf)
+                {
+                    /*
+                    ConstructionMenu.SetActive(true);
+                    OtherMenu.SetActive(false);
+                    defaultLaunchPrice = (45000 + (2000 * thePlayer.R_Stats.rocketLevel) + (500 * thePlayer.R_Stats.hullLevel));
+                    float CheckPrice = defaultLaunchPrice;
+                    if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                        LaunchButton.interactable = true;
+                    else
+                        LaunchButton.interactable = false; */
+                }
             }
-        }
-        else
-        {
-            if (!OtherMenu.activeSelf)
+            else
             {
-                OtherMenu.SetActive(true);
-                ConstructionMenu.SetActive(false);
-            }
-            if(launchTypeDropdown.options[launchTypeDropdown.value].text == "Supply")
-            {
-                if (AmountType.text != "Supplies")
-                    AmountType.text = "Supplies";
-                Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePercargoTons), 0, rocketCarryWeight);
-                float CheckPrice = defaultLaunchPrice + pricePercargoTons * Amount.value;
-                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
-                    LaunchButton.interactable = true;
-                else
-                    LaunchButton.interactable = false;
-            }
-            else if (launchTypeDropdown.options[launchTypeDropdown.value].text == "Colonize")
-            {
-                if (AmountType.text != "Colonists")
-                    AmountType.text = "Colonists";
-                Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePerColonist), 0, rocketCarryWeight);
-                float CheckPrice = defaultLaunchPrice + pricePerColonist * Amount.value;
-                if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
-                    LaunchButton.interactable = true;
-                else
-                    LaunchButton.interactable = false;
+                if (!OtherMenu.activeSelf)
+                {
+                    OtherMenu.SetActive(true);
+                    ConstructionMenu.SetActive(false);
+                }
+                if (launchTypeDropdown.options[launchTypeDropdown.value].text == "Supply")
+                {
+                    if (AmountType.text != "Supplies")
+                        AmountType.text = "Supplies";
+                    Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePercargoTons), 0, thePlayer.R_Stats.CarryWeight);
+                /*    float CheckPrice = defaultLaunchPrice + pricePercargoTons * Amount.value;
+                    if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                        LaunchButton.interactable = true;
+                    else
+                        LaunchButton.interactable = false; */
+                }
+                else if (launchTypeDropdown.options[launchTypeDropdown.value].text == "Colonize")
+                {
+                    if (AmountType.text != "Colonists")
+                        AmountType.text = "Colonists";
+                    Amount.maxValue = Mathf.Clamp((thePlayer.defaultIncome / pricePerColonist), 0, thePlayer.R_Stats.CarryWeight);
+                /*    float CheckPrice = defaultLaunchPrice + pricePerColonist * Amount.value;
+                    if (thePlayer.P_Stats.Balance > CheckPrice && canLaunchAgain)
+                        LaunchButton.interactable = true;
+                    else
+                        LaunchButton.interactable = false; */
+                }
             }
         }
     }
    
     public void Launch()
     {
-        rocketCarryWeight = thePlayer.P_Stats.rocketCarryWeight;
-        string TypeOf = launchTypeDropdown.options[launchTypeDropdown.value].text;
+        rocketCarryWeight = thePlayer.R_Stats.CarryWeight + (thePlayer.engineerCount);
+        float TypeOf = launchTypeDropdown.value;
+
 
         explosionDetermination = Random.Range(0, 100f);
 
-        defaultLaunchPrice = (75000 + (2000 * thePlayer.R_Stats.rocketLevel) + (500 * thePlayer.R_Stats.hullLevel));
-        if (TypeOf == "Supply")
+        Debug.Log(TypeOf);
+
+        defaultLaunchPrice = (45000 + (2000 * thePlayer.R_Stats.RocketLevel) + (500 * thePlayer.R_Stats.HullLevel));
+        if (TypeOf == 1)
         {
-            LaunchRocket(LaunchType.Supply, Amount.value, "", explosionDetermination, 60f); 
+            LaunchRocket(LaunchType.Supply, SliderValue, "", explosionDetermination, 60f); 
         }
-        else if (TypeOf == "Construct")
+        else if (TypeOf == 0)
         {
             string BuildingType = buildingTypeDropdown.options[buildingTypeDropdown.value].text;
             LaunchRocket(LaunchType.Construct, 0, BuildingType, explosionDetermination, 60f); // 60 dagen
 
         }
-        else if (TypeOf == "Colonize")
+        else if (TypeOf == 2)
         {
-            LaunchRocket(LaunchType.Colonize, Amount.value, "", explosionDetermination, 60f);
+            LaunchRocket(LaunchType.Colonize, SliderValue, "", explosionDetermination, 60f);
         }
         LaunchButton.interactable = false;
         canLaunchAgain = false;
+        ToMoonButton.gameObject.SetActive(false);
         StartCoroutine(ReadyToLaunch(45));
     }
 
-    void LaunchRocket(LaunchType type, float Value, string Building, float explosionNumber, float speed)
+    void LaunchRocket(LaunchType type, int Value, string Building, float explosionNumber, float speed)
     {
         Instantiate(Rocket, RocketSpawnPoint.transform.position, RocketSpawnPoint.transform.rotation);
-        if (explosionDetermination > (((chanceOfExplosion / 2) / thePlayer.R_Stats.hullLevel) + ((chanceOfExplosion / 2) / (thePlayer.R_Stats.rocketLevel / 2)) + 10) || explosionCounter > Random.Range(2, 5))
+        explosionCounter = 7;
+        if (explosionDetermination > (((chanceOfExplosion / 2) / thePlayer.R_Stats.HullLevel) + ((chanceOfExplosion / 2) / (thePlayer.R_Stats.RocketLevel / 2)) + 10) || explosionCounter > Random.Range(2, 5))
         {
             explosionCounter = 0;
             if (type == LaunchType.Supply)
             {
-                // Value == Aantal ton cargo
                 LaunchPrice = defaultLaunchPrice + pricePercargoTons * Value;
-                thePlayer.balance -= Mathf.RoundToInt(LaunchPrice);
-                thePlayer.M_Stats.Supplies =+ Mathf.RoundToInt(Value);
-                StartCoroutine(Resource_ETA(type, Value, speed));
+                thePlayer.balance = thePlayer.balance - Mathf.RoundToInt(LaunchPrice);
+                GameManager.supplies += Value;
+                Debug.Log(GameManager.supplies + " Supplies");
+                StartCoroutine(RewardPlayerTimer( speed));
             }
             else if (type == LaunchType.Construct)
             {
                 LaunchPrice = defaultLaunchPrice + Value;
-                thePlayer.balance -= Mathf.RoundToInt(LaunchPrice);
-                StartCoroutine(Resource_ETA(type, Value, speed));
+                thePlayer.balance = thePlayer.balance - Mathf.RoundToInt(LaunchPrice);
+                StartCoroutine(RewardPlayerTimer( speed));
+                for (int x = 0; x < buildingTypeDropdown.options.Count; x++)
+                {
+                    if (buildingTypeDropdown.options[x].text == Building)
+                    {
+                        buildingTypeDropdown.options.Remove(buildingTypeDropdown.options[x]);
+                        break;
+                    }
+                }
+                buildingTypeDropdown.value = 0;
+                buildingTypeDropdown.RefreshShownValue();
+
                 switch (Building)
                 {
                     case "MainHub":
-                        thePlayer.M_Stats.MainHubBuilt = true;
+                        GameManager.MainHubBuilt = true;
                         break;
                     case "Theatre":
-                        thePlayer.M_Stats.TheatreBuilt = true;
+                        GameManager.TheatreBuilt = true;
                         break;
                     case "Lab":
-                        thePlayer.M_Stats.LabBuilt = true;
+                        GameManager.LabBuilt = true;
                         break;
                     case "Storage":
-                        thePlayer.M_Stats.StorageBuilt = true;
+                        GameManager.StorageBuilt = true;
                         break;
                     case "LaunchPad":
-                        thePlayer.M_Stats.LaunchPadBuilt = true;
+                        GameManager.LaunchPadBuilt = true;
                         break;
                     default:
                         Debug.Log("NO BUILDING FOUND");
@@ -188,9 +230,9 @@ public class Launcher : MonoBehaviour
             else if (type == LaunchType.Colonize)
             {
                 LaunchPrice = defaultLaunchPrice + pricePerColonist * Value;
-                thePlayer.balance -= Mathf.RoundToInt(LaunchPrice);
-                StartCoroutine(Consruction_ETA(Building, speed));
-                thePlayer.M_Stats.Colonists = +Mathf.RoundToInt(Value);
+                thePlayer.balance = thePlayer.balance - Mathf.RoundToInt(LaunchPrice);
+                GameManager.Colonists += Value;
+                StartCoroutine(RewardPlayerTimer(speed));
             }
         }
         else
@@ -198,7 +240,6 @@ public class Launcher : MonoBehaviour
             StartCoroutine(Explosion(40));
             explosionCounter++;
         }
-        thePlayer.updateBalance();
     }
 
     private IEnumerator ReadyToLaunch(float WaitTime)
@@ -208,37 +249,13 @@ public class Launcher : MonoBehaviour
         canLaunchAgain = true;
     }
 
-    private IEnumerator Consruction_ETA(string Building, float waitTime)
+   
+
+
+    private IEnumerator RewardPlayerTimer(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
         RewardPlayer();
-        switch (Building)
-        {
-            case "MainBuilding":
-
-                break;
-            default:
-                Debug.Log("ERROR NO BUILDING SELECTED");
-                break;
-        }
-        // bouw hier dat ene gebouw. Misschien kan je dat gewoon met een bool doen en scriptable object en gebouwen "Uitzetten".
-    }
-
-
-    private IEnumerator Resource_ETA(LaunchType type, float value, float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        RewardPlayer();
-        if (type == LaunchType.Supply)
-        {
-            // check ook nog of t ruimteschip bestaat na deze timer, zo niet dan moet hij deleted worden. Of pak t anders aan.
-            // Voeg aan het scriptable Object van de maan de nieuwe waardes toe aan supplies;
-            // Voeg ook happyness toe omdat ze weer te eten krijgen.
-        }
-        else if (type == LaunchType.Construct)
-        {
-            // Voeg aan het scriptable object van de maan de nieuwe colonisten waardes toe.
-        }
     }
 
     void RewardPlayer()
@@ -246,6 +263,7 @@ public class Launcher : MonoBehaviour
         thePlayer.defaultIncome += 6000;
         AudioSource.PlayOneShot(CongratulationsSound);
         SuccessfullLaunchUI.SetActive(true);
+        ToMoonButton.gameObject.SetActive(true);
     }
 
     private IEnumerator Explosion(float waitTime)
@@ -254,6 +272,7 @@ public class Launcher : MonoBehaviour
         ExplosionUI.SetActive(true);
         AudioSource.PlayOneShot(ExplosionSound);
         thePlayer.defaultIncome -= 2000;
+        ToMoonButton.gameObject.SetActive(true);
         // doe hier t explosie geluid ding, doe gewoon iets met UI of zo en een knal
     }
 }

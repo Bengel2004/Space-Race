@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c959c095fefb789409e59aaebbb68688, type: 3}
   m_Name: _PLAYER_DEFAULT
   m_EditorClassIdentifier: 
-  Balance: 30000
+  Balance: 150000
   DefaultIncome: 30000
   Scientists: 1
   Engineers: 1

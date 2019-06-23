@@ -5,10 +5,6 @@ using TMPro;
 
 public class MoonManager : MonoBehaviour
 {
-    public int Colonists;
-    public int supplies;
-    public int happyness;
-    public MoonStats theMoonStats;
     public GameObject MainHub;
     public GameObject Theatre;
     public GameObject Lab;
@@ -21,24 +17,17 @@ public class MoonManager : MonoBehaviour
 
     float timestamp = 0.0f;
     // Start is called before the first frame update
-    private void Awake()
-    {
-        supplies = theMoonStats.Supplies;
-        Colonists = theMoonStats.Colonists;
-        happyness = theMoonStats.Happyness;
-    }
-
     void Start()
     {
-        if(!theMoonStats.MainHubBuilt)
+        if(!GameManager.MainHubBuilt)
             MainHub.SetActive(false);
-        if (!theMoonStats.TheatreBuilt)
+        if (!GameManager.TheatreBuilt)
             Theatre.SetActive(false);
-        if (!theMoonStats.LabBuilt)
+        if (!GameManager.LabBuilt)
             Lab.SetActive(false);
-        if (!theMoonStats.StorageBuilt)
+        if (!GameManager.StorageBuilt)
             Storage.SetActive(false);
-        if (!theMoonStats.LaunchPadBuilt)
+        if (!GameManager.LaunchPadBuilt)
             LaunchPad.SetActive(false);
         timestamp = Time.time + 0f;
     }
@@ -46,29 +35,19 @@ public class MoonManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (theMoonStats.MainHubBuilt && !MainHub.activeSelf)
+        if (GameManager.MainHubBuilt && !MainHub.activeSelf)
             MainHub.SetActive(true);
-        if (theMoonStats.TheatreBuilt && !Theatre.activeSelf)
+        if (GameManager.TheatreBuilt && !Theatre.activeSelf)
             Theatre.SetActive(true);
-        if (theMoonStats.LabBuilt && !Lab.activeSelf)
+        if (GameManager.LabBuilt && !Lab.activeSelf)
             Lab.SetActive(true);
-        if (theMoonStats.StorageBuilt && !Storage.activeSelf)
+        if (GameManager.StorageBuilt && !Storage.activeSelf)
             Storage.SetActive(true);
-        if (theMoonStats.LaunchPadBuilt && !LaunchPad.activeSelf)
+        if (GameManager.LaunchPadBuilt && !LaunchPad.activeSelf)
             LaunchPad.SetActive(true);
 
-        happyness = Mathf.Clamp(happyness, 0, 100);
-        supplies = Mathf.Clamp(supplies, 0, 3000);
-
-        theMoonStats.Supplies = supplies;
-        theMoonStats.Colonists = Colonists;
-        theMoonStats.Happyness = happyness;
-
-        ColonistsText.text = "Colonists: " + Colonists;
-        SuppliesText.text = "Supplies: " + supplies;
-        HappynessText.text = "Happyness: " + happyness;
-
-
-
+        ColonistsText.text = "Colonists: " + GameManager.Colonists.ToString();
+        SuppliesText.text = "Supplies: " + GameManager.supplies.ToString();
+        HappynessText.text = "Happyness: " + GameManager.happyness.ToString();
     }
 }

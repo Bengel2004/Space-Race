@@ -15,3 +15,8 @@ MonoBehaviour:
   Colonists: 0
   Happyness: 50
   Supplies: 0
+  MainHubBuilt: 0
+  TheatreBuilt: 0
+  LabBuilt: 0
+  StorageBuilt: 0
+  LaunchPadBuilt: 0
